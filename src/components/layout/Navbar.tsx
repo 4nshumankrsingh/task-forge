@@ -27,24 +27,17 @@ export function Navbar() {
       {/* Logo */}
       <Link
         to="/dashboard"
-        className="flex items-center gap-2 select-none mr-4 group"
+        className="flex items-center mr-4 select-none shrink-0"
       >
-        <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center
-                        shadow-sm group-hover:shadow-primary/30 transition-shadow duration-200">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path
-              d="M2 3h4v4H2zM8 3h4v2H8zM8 7h4v4H8zM2 9h4v2H2z"
-              fill="white"
-              fillOpacity="0.95"
-            />
-          </svg>
-        </div>
-        <span className="font-semibold text-[15px] tracking-tight text-foreground">
-          Task<span className="text-primary">Forge</span>
-        </span>
+        <img
+          src="/logo.png"
+          alt="TaskForge"
+          className="h-7 w-auto object-contain"
+          draggable={false}
+        />
       </Link>
 
-      {/* Nav links — hidden on small screens, shown md+ */}
+      {/* Nav links */}
       <nav className="hidden md:flex items-center gap-1 flex-1">
         {[
           { label: "Dashboard", to: "/dashboard" },

@@ -30,10 +30,9 @@ export function Sidebar() {
         collapsed ? "w-14" : "w-56"
       )}
     >
-      {/* Top section */}
       <div className="flex flex-col gap-1 flex-1 py-3 px-2 overflow-hidden">
         {/* New project shortcut */}
-        {!collapsed && (
+        {!collapsed ? (
           <Link
             to="/projects/new"
             className="flex items-center gap-2 px-3 py-2 mb-2 rounded-md
@@ -43,8 +42,7 @@ export function Sidebar() {
             <Plus size={15} />
             <span>New Project</span>
           </Link>
-        )}
-        {collapsed && (
+        ) : (
           <Link
             to="/projects/new"
             aria-label="New Project"
@@ -73,10 +71,7 @@ export function Sidebar() {
               )}
             >
               <Icon size={16} className="shrink-0" />
-              {!collapsed && (
-                <span className="truncate">{label}</span>
-              )}
-              {/* Active indicator */}
+              {!collapsed && <span className="truncate">{label}</span>}
               {active && (
                 <span className="absolute left-0 top-1 bottom-1 w-0.5 rounded-r-full bg-primary" />
               )}
@@ -95,9 +90,7 @@ export function Sidebar() {
                      transition-colors duration-150"
         >
           {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
-          {!collapsed && (
-            <span className="ml-2 text-xs">Collapse</span>
-          )}
+          {!collapsed && <span className="ml-2 text-xs">Collapse</span>}
         </button>
       </div>
     </aside>

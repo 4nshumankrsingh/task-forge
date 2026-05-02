@@ -1,57 +1,126 @@
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    /* ── Core palette ── */
+    --primary:           #146886;
+    --primary-foreground: #ffffff;
+    --accent-cyan:       hsl(183 91% 61%);
+    --accent-mid:        #208ca2;
+    --accent-teal:       #57f6e7;
+
+    /* ── Light theme tokens ── */
+    --background:        #ffffff;
+    --foreground:        #0d1b22;
+
+    --card:              #f8fafb;
+    --card-foreground:   #0d1b22;
+
+    --muted:             #f0f4f6;
+    --muted-foreground:  #6b8490;
+
+    --border:            #d6e4ea;
+    --input:             #d6e4ea;
+    --ring:              #146886;
+
+    --accent:            #f0f9fb;
+    --accent-foreground: #0d1b22;
+
+    --destructive:       #e04646;
+    --destructive-foreground: #ffffff;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background:        #0a1219;
+    --foreground:        #e6f0f4;
+
+    --card:              #0f1c26;
+    --card-foreground:   #e6f0f4;
+
+    --muted:             #162633;
+    --muted-foreground:  #6b8fa0;
+
+    --border:            #1e3445;
+    --input:             #1e3445;
+    --ring:              #208ca2;
+
+    --accent:            #112030;
+    --accent-foreground: #e6f0f4;
+
+    --destructive:       #c94040;
+    --destructive-foreground: #ffffff;
+  }
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: "Geist", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* Scrollbar — subtle teal accent */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-mid); }
+
+  /* Focus ring utility */
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+  }
+}
+
+/* ── Utility mappings for Tailwind v4 ── */
 @theme {
-  --color-primary: #146886;
-  --color-primary-foreground: #ffffff;
-
-  --color-accent: #57f6e7;
-  --color-accent-foreground: #0a0a0a;
-
-  --color-teal: #208ca2;
-  --color-cyan: hsl(183 91% 61%);
+  --color-background:        var(--background);
+  --color-foreground:        var(--foreground);
+  --color-card:              var(--card);
+  --color-card-foreground:   var(--card-foreground);
+  --color-primary:           var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted:             var(--muted);
+  --color-muted-foreground:  var(--muted-foreground);
+  --color-border:            var(--border);
+  --color-input:             var(--input);
+  --color-ring:              var(--ring);
+  --color-accent:            var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-cyan:       var(--accent-cyan);
+  --color-accent-mid:        var(--accent-mid);
+  --color-accent-teal:       var(--accent-teal);
+  --color-destructive:       var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --radius-DEFAULT: var(--radius);
 }
 
-/* Base colors for light & dark mode */
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 183 91% 61%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 183 91% 61%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: #146886;
+/* ── Animation helpers ── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 183 91% 61%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 183 91% 61%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: #57f6e7;
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
 }
