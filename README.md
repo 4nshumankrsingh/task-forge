@@ -7,6 +7,13 @@ A full-stack Team Task Manager web application built as an assessment project fo
 🔗 **App:** [task-forge-zeta.vercel.app](https://task-forge-zeta.vercel.app)
 🔗 **Backend API:** [task-forge-production-6afb.up.railway.app](https://task-forge-production-6afb.up.railway.app)
 
+## Test Credentials
+
+| Role   | Email             | Password   |
+|--------|-------------------|------------|
+| Admin  | admin@mail.com    | Admin1234  |
+| Member | member@mail.com   | Mem12345   |
+
 ## Features
 
 - **Authentication** — JWT-based signup and login with bcrypt password hashing
