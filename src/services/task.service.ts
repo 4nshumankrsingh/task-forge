@@ -24,16 +24,19 @@ interface BackendResponse<T> {
   data: T;
 }
 
+interface TasksWrapper {
+  tasks: Task[];
+}
+
 export const taskService = {
-async getByProject(projectId: string, filters?: TaskFilters): Promise<Task[]> {
-  const { data } = await api.get<BackendResponse<Task[]>>(`/tasks/project/${projectId}`, { params: filters });
-  console.log("getByProject raw data.data:", data.data);
-  return data.data;
-},
+  async getByProject(projectId: string, filters?: TaskFilters): Promise<Task[]> {
+    const { data } = await api.get<BackendResponse<TasksWrapper>>(`/tasks/project/${projectId}`, { params: filters });
+    return data.data.tasks;
+  },
 
   async getMyTasks(): Promise<Task[]> {
-    const { data } = await api.get<BackendResponse<Task[]>>("/tasks/me");
-    return data.data;
+    const { data } = await api.get<BackendResponse<TasksWrapper>>("/tasks/me");
+    return data.data.tasks;
   },
 
   async getById(id: string): Promise<Task> {
