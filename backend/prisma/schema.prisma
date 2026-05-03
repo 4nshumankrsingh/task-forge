@@ -16,10 +16,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ownedProjects   Project[]     @relation("ProjectOwner")
-  memberships     TeamMember[]
-  assignedTasks   Task[]        @relation("TaskAssignee")
-  createdTasks    Task[]        @relation("TaskCreator")
+  ownedProjects     Project[]     @relation("ProjectOwner")
+  memberships       TeamMember[]
+  assignedTasks     Task[]        @relation("TaskAssignee")
+  createdTasks      Task[]        @relation("TaskCreator")
+  sentInvitations   Invitation[]  @relation("InvitationSender")
+  receivedInvitations Invitation[] @relation("InvitationReceiver")
 
   @@map("users")
 }
@@ -35,8 +37,9 @@ model Project {
   ownerId String
   owner   User   @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
 
-  members TeamMember[]
-  tasks   Task[]
+  members     TeamMember[]
+  tasks       Task[]
+  invitations Invitation[]
 
   @@map("projects")
 }
@@ -54,6 +57,26 @@ model TeamMember {
 
   @@unique([userId, projectId])
   @@map("team_members")
+}
+
+model Invitation {
+  id        String           @id @default(cuid())
+  role      MemberRole       @default(MEMBER)
+  status    InvitationStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  senderId  String
+  sender    User    @relation("InvitationSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  receiverId String
+  receiver   User   @relation("InvitationReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([receiverId, projectId])
+  @@map("invitations")
 }
 
 model Task {
@@ -102,4 +125,10 @@ enum Priority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }

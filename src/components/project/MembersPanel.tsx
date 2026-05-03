@@ -1,12 +1,14 @@
-import { Shield, Crown, User, MoreVertical, Trash2 } from "lucide-react";
+import { Shield, Crown, User, MoreVertical, Trash2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { projectService } from "@/services/project.service";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import type { Project } from "@/services/project.service";
 
 const ROLE_ICONS: Record<string, React.ElementType> = {
@@ -31,10 +33,11 @@ export function MembersPanel({
   isAdmin: boolean;
 }) {
   const qc = useQueryClient();
+  const navigate = useNavigate();
 
-  const handleRemove = async (memberId: string) => {
+  const handleRemove = async (userId: string) => {
     try {
-      await projectService.removeMember(project.id, memberId);
+      await projectService.removeMember(project.id, userId);
       qc.invalidateQueries({ queryKey: ["projects", project.id] });
       toast.success("Member removed");
     } catch {
@@ -42,13 +45,23 @@ export function MembersPanel({
     }
   };
 
-  const handleRoleChange = async (memberId: string, role: "ADMIN" | "MEMBER") => {
+  const handleRoleChange = async (userId: string, role: "ADMIN" | "MEMBER") => {
     try {
-      await projectService.updateMemberRole(project.id, memberId, role);
+      await projectService.updateMemberRole(project.id, userId, role);
       qc.invalidateQueries({ queryKey: ["projects", project.id] });
       toast.success("Role updated");
     } catch {
       toast.error("Failed to update role");
+    }
+  };
+
+  const handleLeave = async () => {
+    try {
+      await projectService.removeMember(project.id, currentUserId);
+      toast.success("You have left the project");
+      navigate("/projects");
+    } catch {
+      toast.error("Failed to leave project");
     }
   };
 
@@ -63,7 +76,10 @@ export function MembersPanel({
         {project.members?.map((member) => {
           const Icon = ROLE_ICONS[member.role] ?? User;
           const isSelf = member.userId === currentUserId;
-          const canManage = isAdmin && member.role !== "OWNER" && !isSelf;
+          const isOwnerMember = project.ownerId === member.userId;
+          const canManage = isAdmin && !isOwnerMember && !isSelf;
+          const canLeave = isSelf && !isOwnerMember;
+
           return (
             <div key={member.id} className="flex items-center gap-3 px-5 py-3.5 group hover:bg-muted/20 transition-colors">
               <div className="h-9 w-9 rounded-full bg-linear-to-br from-[#146886] to-[#57f6e7] flex items-center justify-center text-white text-xs font-bold shrink-0">
@@ -71,7 +87,7 @@ export function MembersPanel({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground">
-                  {member.user.name} {isSelf && <span className="text-xs text-muted-foreground">(you)</span>}
+                  {member.user.name}{isSelf && <span className="text-xs text-muted-foreground ml-1">(you)</span>}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">{member.user.email}</p>
               </div>
@@ -79,6 +95,18 @@ export function MembersPanel({
                 <span className={cn("flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-lg", ROLE_STYLES[member.role])}>
                   <Icon size={10} /> {member.role}
                 </span>
+
+                {canLeave && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs text-destructive hover:text-destructive hover:bg-destructive/10 gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={handleLeave}
+                  >
+                    <LogOut size={11} /> Leave
+                  </Button>
+                )}
+
                 {canManage && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -88,19 +116,19 @@ export function MembersPanel({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="text-xs">
                       {member.role !== "ADMIN" && (
-                        <DropdownMenuItem onClick={() => handleRoleChange(member.id, "ADMIN")}>
+                        <DropdownMenuItem onClick={() => handleRoleChange(member.userId, "ADMIN")}>
                           Make Admin
                         </DropdownMenuItem>
                       )}
                       {member.role !== "MEMBER" && (
-                        <DropdownMenuItem onClick={() => handleRoleChange(member.id, "MEMBER")}>
+                        <DropdownMenuItem onClick={() => handleRoleChange(member.userId, "MEMBER")}>
                           Make Member
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         className="text-destructive focus:text-destructive gap-2"
-                        onClick={() => handleRemove(member.id)}
+                        onClick={() => handleRemove(member.userId)}
                       >
                         <Trash2 size={11} /> Remove
                       </DropdownMenuItem>
