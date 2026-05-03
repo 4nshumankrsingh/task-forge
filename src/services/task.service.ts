@@ -25,10 +25,11 @@ interface BackendResponse<T> {
 }
 
 export const taskService = {
-  async getByProject(projectId: string, filters?: TaskFilters): Promise<Task[]> {
-    const { data } = await api.get<BackendResponse<Task[]>>(`/tasks/project/${projectId}`, { params: filters });
-    return data.data;
-  },
+async getByProject(projectId: string, filters?: TaskFilters): Promise<Task[]> {
+  const { data } = await api.get<BackendResponse<Task[]>>(`/tasks/project/${projectId}`, { params: filters });
+  console.log("getByProject raw data.data:", data.data);
+  return data.data;
+},
 
   async getMyTasks(): Promise<Task[]> {
     const { data } = await api.get<BackendResponse<Task[]>>("/tasks/me");
