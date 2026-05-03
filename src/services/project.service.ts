@@ -56,10 +56,10 @@ interface BackendResponse<T> {
 }
 
 export const projectService = {
-  async getAll(): Promise<Project[]> {
-    const { data } = await api.get<BackendResponse<Project[]>>("/projects");
-    return data.data;
-  },
+async getAll(): Promise<Project[]> {
+  const { data } = await api.get<any>("/projects");
+  return data.data.projects;
+},
 
   async getById(id: string): Promise<Project> {
     const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
