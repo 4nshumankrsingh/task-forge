@@ -3,9 +3,8 @@
 A full-stack Team Task Manager web application built as an assessment project for **[Ethara AI](https://www.ethara.ai/)** (Full Stack Software Engineer role).
 
 ## Live Demo
+https://task-forge-production-6afb.up.railway.app
 
-🔗 **Frontend:** 
-🔗 **Backend API:** 
 
 ## Features
 
