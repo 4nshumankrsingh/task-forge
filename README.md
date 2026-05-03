@@ -3,8 +3,9 @@
 A full-stack Team Task Manager web application built as an assessment project for **[Ethara AI](https://www.ethara.ai/)** (Full Stack Software Engineer role).
 
 ## Live Demo
-https://task-forge-production-6afb.up.railway.app
 
+🔗 **App:** [task-forge-zeta.vercel.app](https://task-forge-zeta.vercel.app)
+🔗 **Backend API:** [task-forge-production-6afb.up.railway.app](https://task-forge-production-6afb.up.railway.app)
 
 ## Features
 
@@ -40,7 +41,7 @@ https://task-forge-production-6afb.up.railway.app
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/your-username/task-forge.git
+git clone https://github.com/4nshumankrsingh/task-forge.git
 cd task-forge
 ```
 
@@ -56,7 +57,10 @@ Fill in your `.env`:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/taskforge"
 JWT_SECRET="your-secret-key"
+JWT_EXPIRES_IN="7d"
 PORT=5000
+CLIENT_URL=http://localhost:5173
+NODE_ENV=development
 ```
 
 ```bash
@@ -70,7 +74,6 @@ npm run dev
 
 ```bash
 cd ..
-cp .env.example .env
 ```
 
 Fill in your `.env`:
@@ -88,9 +91,24 @@ App runs at `http://localhost:5173`.
 
 ## Deployment
 
-- **Backend** — deployed on [Railway](https://railway.app)
+- **Backend** — deployed on [Railway](https://railway.app) with root directory set to `/backend`
 - **Frontend** — deployed on [Vercel](https://vercel.com)
 
-After deploying the backend, update `VITE_API_URL` in your Vercel environment variables to point to your live Railway URL.
+### Environment Variables
+
+**Railway (backend):**
+```env
+DATABASE_URL=your_neon_postgres_url
+JWT_SECRET=your_secret
+JWT_EXPIRES_IN=7d
+PORT=5000
+CLIENT_URL=https://task-forge-zeta.vercel.app
+NODE_ENV=production
+```
+
+**Vercel (frontend):**
+```env
+VITE_API_URL=https://task-forge-production-6afb.up.railway.app/api
+```
 
 ## Project Structure
