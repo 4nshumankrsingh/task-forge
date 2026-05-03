@@ -39,10 +39,11 @@ export const taskService = {
     return data.data.tasks;
   },
 
-  async getById(id: string): Promise<Task> {
-    const { data } = await api.get<BackendResponse<Task>>(`/tasks/${id}`);
-    return data.data;
-  },
+async getById(id: string): Promise<Project> {
+  const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
+  console.log("getById raw data.data:", data.data);
+  return data.data;
+},
 
   async create(projectId: string, payload: CreateTaskPayload): Promise<Task> {
     const { data } = await api.post<BackendResponse<Task>>(`/tasks/project/${projectId}`, payload);

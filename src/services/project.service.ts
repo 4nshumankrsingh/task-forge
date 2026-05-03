@@ -61,10 +61,11 @@ async getAll(): Promise<Project[]> {
   return data.data.projects;
 },
 
-  async getById(id: string): Promise<Project> {
-    const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
-    return data.data;
-  },
+async getById(id: string): Promise<Project> {
+  const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
+  console.log("getById raw data.data:", data.data);
+  return data.data;
+},
 
   async create(payload: CreateProjectPayload): Promise<Project> {
     const { data } = await api.post<BackendResponse<Project>>("/projects", payload);
