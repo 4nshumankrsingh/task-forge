@@ -17,7 +17,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("tf_token");
       localStorage.removeItem("tf_user");
-      window.location.href = "/login";
+      window.dispatchEvent(new Event("auth:logout"));
     }
     return Promise.reject(error);
   }

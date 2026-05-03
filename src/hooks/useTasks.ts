@@ -7,14 +7,14 @@ export function useProjectTasks(projectId: string, filters?: TaskFilters) {
   return useQuery({
     queryKey: ["tasks", "project", projectId, filters],
     queryFn: () => taskService.getByProject(projectId, filters),
-    enabled: !!projectId,
+    enabled: !!projectId && projectId !== "new",
   });
 }
 
 export function useMyTasks() {
   return useQuery({
     queryKey: ["tasks", "me"],
-    queryFn: taskService.getMyTasks,
+    queryFn: () => taskService.getMyTasks(),
   });
 }
 

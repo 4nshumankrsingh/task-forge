@@ -49,25 +49,31 @@ export interface UpdateProjectPayload {
   status?: Project["status"];
 }
 
+interface BackendResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export const projectService = {
   async getAll(): Promise<Project[]> {
-    const { data } = await api.get<Project[]>("/projects");
-    return data;
+    const { data } = await api.get<BackendResponse<Project[]>>("/projects");
+    return data.data;
   },
 
   async getById(id: string): Promise<Project> {
-    const { data } = await api.get<Project>(`/projects/${id}`);
-    return data;
+    const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
+    return data.data;
   },
 
   async create(payload: CreateProjectPayload): Promise<Project> {
-    const { data } = await api.post<Project>("/projects", payload);
-    return data;
+    const { data } = await api.post<BackendResponse<Project>>("/projects", payload);
+    return data.data;
   },
 
   async update(id: string, payload: UpdateProjectPayload): Promise<Project> {
-    const { data } = await api.patch<Project>(`/projects/${id}`, payload);
-    return data;
+    const { data } = await api.patch<BackendResponse<Project>>(`/projects/${id}`, payload);
+    return data.data;
   },
 
   async remove(id: string): Promise<void> {
@@ -75,8 +81,8 @@ export const projectService = {
   },
 
   async inviteMember(projectId: string, email: string, role: "ADMIN" | "MEMBER" = "MEMBER"): Promise<ProjectMember> {
-    const { data } = await api.post<ProjectMember>(`/projects/${projectId}/members`, { email, role });
-    return data;
+    const { data } = await api.post<BackendResponse<ProjectMember>>(`/projects/${projectId}/members`, { email, role });
+    return data.data;
   },
 
   async removeMember(projectId: string, memberId: string): Promise<void> {
@@ -84,7 +90,7 @@ export const projectService = {
   },
 
   async updateMemberRole(projectId: string, memberId: string, role: "ADMIN" | "MEMBER"): Promise<ProjectMember> {
-    const { data } = await api.patch<ProjectMember>(`/projects/${projectId}/members/${memberId}/role`, { role });
-    return data;
+    const { data } = await api.patch<BackendResponse<ProjectMember>>(`/projects/${projectId}/members/${memberId}/role`, { role });
+    return data.data;
   },
 };

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 export function useProjects() {
   return useQuery({
     queryKey: ["projects"],
-    queryFn: projectService.getAll,
+    queryFn: () => projectService.getAll(),
   });
 }
 
@@ -14,7 +14,7 @@ export function useProject(id: string) {
   return useQuery({
     queryKey: ["projects", id],
     queryFn: () => projectService.getById(id),
-    enabled: !!id,
+    enabled: !!id && id !== "new",
   });
 }
 

@@ -18,30 +18,36 @@ export interface TaskFilters {
   assigneeId?: string;
 }
 
+interface BackendResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+}
+
 export const taskService = {
   async getByProject(projectId: string, filters?: TaskFilters): Promise<Task[]> {
-    const { data } = await api.get<Task[]>(`/tasks/project/${projectId}`, { params: filters });
-    return data;
+    const { data } = await api.get<BackendResponse<Task[]>>(`/tasks/project/${projectId}`, { params: filters });
+    return data.data;
   },
 
   async getMyTasks(): Promise<Task[]> {
-    const { data } = await api.get<Task[]>("/tasks/me");
-    return data;
+    const { data } = await api.get<BackendResponse<Task[]>>("/tasks/me");
+    return data.data;
   },
 
   async getById(id: string): Promise<Task> {
-    const { data } = await api.get<Task>(`/tasks/${id}`);
-    return data;
+    const { data } = await api.get<BackendResponse<Task>>(`/tasks/${id}`);
+    return data.data;
   },
 
   async create(projectId: string, payload: CreateTaskPayload): Promise<Task> {
-    const { data } = await api.post<Task>(`/tasks/project/${projectId}`, payload);
-    return data;
+    const { data } = await api.post<BackendResponse<Task>>(`/tasks/project/${projectId}`, payload);
+    return data.data;
   },
 
   async update(id: string, payload: UpdateTaskPayload): Promise<Task> {
-    const { data } = await api.patch<Task>(`/tasks/${id}`, payload);
-    return data;
+    const { data } = await api.patch<BackendResponse<Task>>(`/tasks/${id}`, payload);
+    return data.data;
   },
 
   async remove(id: string): Promise<void> {

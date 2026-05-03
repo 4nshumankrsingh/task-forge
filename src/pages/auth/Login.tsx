@@ -29,14 +29,17 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm) => {
-    try {
-      await login(data);
-      navigate(from, { replace: true });
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Login failed");
-    }
-  };
+const onSubmit = async (data: LoginForm) => {
+  console.log("onSubmit fired", data);
+  try {
+    await login(data);
+    console.log("login resolved, navigating to", from);
+    navigate(from, { replace: true });
+  } catch (err) {
+    console.error("login error", err);
+    toast.error(err instanceof Error ? err.message : "Login failed");
+  }
+};
 
   return (
     <div className="min-h-screen bg-background flex">

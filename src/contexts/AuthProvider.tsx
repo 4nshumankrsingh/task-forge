@@ -1,24 +1,8 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import { useState, useCallback, useEffect } from "react";
+import { AuthContext } from "./AuthContext";
 import type { User, LoginPayload, RegisterPayload } from "@/types/auth";
 import { authService } from "@/services/auth.service";
 import { toast } from "sonner";
-
-interface AuthContextValue {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (payload: LoginPayload) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null);
 
 const TOKEN_KEY = "tf_token";
 const USER_KEY = "tf_user";
@@ -39,45 +23,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (user && token) {
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
-      localStorage.setItem(TOKEN_KEY, token);
-    } else {
-      localStorage.removeItem(USER_KEY);
-      localStorage.removeItem(TOKEN_KEY);
-    }
-  }, [user, token]);
+  const persistAuth = (user: User, token: string) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    localStorage.setItem(TOKEN_KEY, token);
+    setUser(user);
+    setToken(token);
+  };
 
-  const login = useCallback(async (payload: LoginPayload) => {
-    setIsLoading(true);
-    try {
-      const res = await authService.login(payload);
-      setToken(res.token);
-      setUser(res.user);
-      toast.success(`Welcome back, ${res.user.name}!`);
-    } finally {
-      setIsLoading(false);
-    }
+  const clearAuth = useCallback(() => {
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    setUser(null);
+    setToken(null);
   }, []);
+
+  useEffect(() => {
+    const handler = () => clearAuth();
+    window.addEventListener("auth:logout", handler);
+    return () => window.removeEventListener("auth:logout", handler);
+  }, [clearAuth]);
+
+const login = useCallback(async (payload: LoginPayload) => {
+  console.log("login called with", payload);
+  setIsLoading(true);
+  try {
+    const res = await authService.login(payload);
+    console.log("authService.login response", res);
+    persistAuth(res.user, res.token);
+    toast.success(`Welcome back, ${res.user.name}!`);
+  } catch (err) {
+    console.error("login threw", err);
+    throw err;
+  } finally {
+    setIsLoading(false);
+  }
+}, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
     setIsLoading(true);
     try {
       const res = await authService.register(payload);
-      setToken(res.token);
-      setUser(res.user);
+      persistAuth(res.user, res.token);
       toast.success("Account created! Welcome to Task Forge.");
+    } catch (err) {
+      throw err;
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   const logout = useCallback(() => {
-    setUser(null);
-    setToken(null);
+    clearAuth();
     toast.info("Logged out");
-  }, []);
+  }, [clearAuth]);
 
   return (
     <AuthContext.Provider

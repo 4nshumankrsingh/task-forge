@@ -16,9 +16,15 @@ export interface DashboardStats {
   upcomingTasks: Task[];
 }
 
+interface BackendResponse {
+  success: boolean;
+  message: string;
+  data: DashboardStats;
+}
+
 export const dashboardService = {
   async getStats(): Promise<DashboardStats> {
-    const { data } = await api.get<DashboardStats>("/dashboard");
-    return data;
+    const { data } = await api.get<BackendResponse>("/dashboard");
+    return data.data;
   },
 };

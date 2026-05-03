@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2, CheckCircle2 } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import { AuthField } from "@/components/auth/AuthForm";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { toast } from "sonner";
@@ -96,15 +96,15 @@ export default function Register() {
 
   const password = watch("password", "");
 
-  const onSubmit = async (data: RegisterForm) => {
-    try {
-      await registerUser(data);
-      navigate("/dashboard");
-      toast.success("Account created — welcome to TaskForge!");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Registration failed");
-    }
-  };
+const onSubmit = async (data: RegisterForm) => {
+  try {
+    const { confirmPassword: _, ...payload } = data;
+    await registerUser(payload);
+    navigate("/dashboard");
+  } catch (err) {
+    toast.error(err instanceof Error ? err.message : "Registration failed");
+  }
+};
 
   return (
     <div className="min-h-screen bg-background flex">
