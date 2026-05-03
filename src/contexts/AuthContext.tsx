@@ -1,14 +1,16 @@
 import {
   createContext,
-  useContext,
   useState,
-  useCallback,
   useEffect,
+  useCallback,
 } from "react";
 import type { User, LoginPayload, RegisterPayload } from "@/types/auth";
+import { authService } from "@/services/auth.service";
+import { toast } from "sonner";
 
 interface AuthContextValue {
   user: User | null;
+  token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
@@ -16,10 +18,10 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
-const TOKEN_KEY = "tf-access-token";
-const USER_KEY = "tf-user";
+const TOKEN_KEY = "tf_token";
+const USER_KEY = "tf_user";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
@@ -30,36 +32,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
   });
+
+  const [token, setToken] = useState<string | null>(
+    () => localStorage.getItem(TOKEN_KEY)
+  );
+
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sync user to localStorage whenever it changes
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
+      localStorage.setItem(TOKEN_KEY, token);
     } else {
       localStorage.removeItem(USER_KEY);
       localStorage.removeItem(TOKEN_KEY);
     }
-  }, [user]);
+  }, [user, token]);
 
   const login = useCallback(async (payload: LoginPayload) => {
     setIsLoading(true);
     try {
-      // Will be replaced with real API call in Phase 6
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message ?? "Invalid credentials");
-      }
-
-      const data = await res.json();
-      localStorage.setItem(TOKEN_KEY, data.tokens.accessToken);
-      setUser(data.user);
+      const res = await authService.login(payload);
+      setToken(res.token);
+      setUser(res.user);
+      toast.success(`Welcome back, ${res.user.name}!`);
     } finally {
       setIsLoading(false);
     }
@@ -68,24 +64,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = useCallback(async (payload: RegisterPayload) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: payload.name,
-          email: payload.email,
-          password: payload.password,
-        }),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message ?? "Registration failed");
-      }
-
-      const data = await res.json();
-      localStorage.setItem(TOKEN_KEY, data.tokens.accessToken);
-      setUser(data.user);
+      const res = await authService.register(payload);
+      setToken(res.token);
+      setUser(res.user);
+      toast.success("Account created! Welcome to Task Forge.");
     } finally {
       setIsLoading(false);
     }
@@ -93,13 +75,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(() => {
     setUser(null);
+    setToken(null);
+    toast.info("Logged out");
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        token,
+        isAuthenticated: !!token,
         isLoading,
         login,
         register,
@@ -109,10 +94,4 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
 }
