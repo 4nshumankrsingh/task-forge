@@ -9,10 +9,10 @@ A full-stack Team Task Manager web application built as an assessment project fo
 
 ## Test Credentials
 
-| Role   | Email             | Password   |
-|--------|-------------------|------------|
-| Admin  | admin@mail.com    | Admin1234  |
-| Member | member@mail.com   | Mem12345   |
+| Role   | Email           | Password  |
+|--------|-----------------|-----------|
+| Admin  | admin@mail.com  | Admin1234 |
+| Member | member@mail.com | Mem12345  |
 
 ## Features
 
@@ -37,6 +37,16 @@ A full-stack Team Task Manager web application built as an assessment project fo
 - Express + TypeScript
 - Prisma ORM + PostgreSQL 16
 - JWT authentication + bcrypt
+
+## CI/CD
+
+GitHub Actions is configured to run on every push to `main` or `dev` and on all pull requests to `main`.
+
+**Frontend job** — installs dependencies, runs TypeScript type checking (`tsc --noEmit`), and runs a production build to catch any compile-time or build errors.
+
+**Backend job** — installs dependencies and runs TypeScript type checking (`tsc --noEmit`) to validate the Express + Prisma codebase.
+
+Deployments are automatic — Railway redeploys the backend and Vercel redeploys the frontend on every push to `main`.
 
 ## Getting Started
 
