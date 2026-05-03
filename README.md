@@ -117,5 +117,3 @@ NODE_ENV=production
 ```env
 VITE_API_URL=https://task-forge-production-6afb.up.railway.app/api
 ```
-
-## Project Structure
