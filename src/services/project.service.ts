@@ -49,32 +49,25 @@ export interface UpdateProjectPayload {
   status?: Project["status"];
 }
 
-interface BackendResponse<T> {
-  success: boolean;
-  message: string;
-  data: T;
-}
-
 export const projectService = {
-async getAll(): Promise<Project[]> {
-  const { data } = await api.get<any>("/projects");
-  return data.data.projects;
-},
+  async getAll(): Promise<Project[]> {
+    const { data } = await api.get<any>("/projects");
+    return data.data.projects;
+  },
 
-async getById(id: string): Promise<Project> {
-  const { data } = await api.get<BackendResponse<Project>>(`/projects/${id}`);
-  console.log("getById raw data.data:", data.data);
-  return data.data;
-},
+  async getById(id: string): Promise<Project> {
+    const { data } = await api.get<any>(`/projects/${id}`);
+    return data.data.project;
+  },
 
   async create(payload: CreateProjectPayload): Promise<Project> {
-    const { data } = await api.post<BackendResponse<Project>>("/projects", payload);
-    return data.data;
+    const { data } = await api.post<any>("/projects", payload);
+    return data.data.project ?? data.data;
   },
 
   async update(id: string, payload: UpdateProjectPayload): Promise<Project> {
-    const { data } = await api.patch<BackendResponse<Project>>(`/projects/${id}`, payload);
-    return data.data;
+    const { data } = await api.patch<any>(`/projects/${id}`, payload);
+    return data.data.project ?? data.data;
   },
 
   async remove(id: string): Promise<void> {
@@ -82,8 +75,8 @@ async getById(id: string): Promise<Project> {
   },
 
   async inviteMember(projectId: string, email: string, role: "ADMIN" | "MEMBER" = "MEMBER"): Promise<ProjectMember> {
-    const { data } = await api.post<BackendResponse<ProjectMember>>(`/projects/${projectId}/members`, { email, role });
-    return data.data;
+    const { data } = await api.post<any>(`/projects/${projectId}/members`, { email, role });
+    return data.data.member ?? data.data;
   },
 
   async removeMember(projectId: string, memberId: string): Promise<void> {
@@ -91,7 +84,7 @@ async getById(id: string): Promise<Project> {
   },
 
   async updateMemberRole(projectId: string, memberId: string, role: "ADMIN" | "MEMBER"): Promise<ProjectMember> {
-    const { data } = await api.patch<BackendResponse<ProjectMember>>(`/projects/${projectId}/members/${memberId}/role`, { role });
-    return data.data;
+    const { data } = await api.patch<any>(`/projects/${projectId}/members/${memberId}/role`, { role });
+    return data.data.member ?? data.data;
   },
 };
