@@ -7,14 +7,14 @@ export async function createTask(req: AuthRequest, res: Response) {
   const { title, description, status, priority, dueDate, assigneeId } = req.body;
   const creatorId = req.user!.userId;
 
-  // If assigning to someone, make sure they're in the project
+
   if (assigneeId) {
     const isMember = await prisma.teamMember.findUnique({
       where: { userId_projectId: { userId: assigneeId, projectId } },
     });
     const isOwner = await prisma.project
       .findUnique({ where: { id: projectId } })
-      .then((p) => p?.ownerId === assigneeId);
+      .then((p: { ownerId: string } | null) => p?.ownerId === assigneeId);
 
     if (!isMember && !isOwner) {
       return res.status(400).json({

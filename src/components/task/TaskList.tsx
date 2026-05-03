@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import type { Task, ProjectMember } from "@/services/project.service";
+import type { Task } from "@/services/project.service";
 
 const PRIORITY_STYLES: Record<string, string> = {
   LOW: "text-emerald-600 bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-400",
@@ -16,7 +16,6 @@ const PRIORITY_STYLES: Record<string, string> = {
 
 interface TaskListProps {
   tasks: Task[];
-  members: ProjectMember[];
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
   onStatusChange: (id: string, status: Task["status"]) => void;

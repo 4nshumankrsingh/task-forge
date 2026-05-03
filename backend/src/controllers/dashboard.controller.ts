@@ -69,7 +69,7 @@ export async function getDashboardStats(req: AuthRequest, res: Response) {
   ]);
 
   const statusMap = tasksByStatus.reduce(
-    (acc, item) => {
+    (acc: Record<string, number>, item: typeof tasksByStatus[0]) => {
       acc[item.status] = item._count.status;
       return acc;
     },

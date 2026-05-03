@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Trash2, UserCircle, CalendarDays, Flag } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, UserCircle, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format, isPast } from "date-fns";
-import type { Task, ProjectMember } from "@/services/project.service";
+import type { Task } from "@/services/project.service";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
@@ -24,7 +24,6 @@ const PRIORITY_DOT: Record<string, string> = {
 
 interface KanbanBoardProps {
   tasks: Task[];
-  members: ProjectMember[];
   onEdit: (task: Task) => void;
   onDelete: (id: string) => void;
   onStatusChange: (id: string, status: Task["status"]) => void;
@@ -90,7 +89,7 @@ function TaskCard({ task, onEdit, onDelete, onStatusChange }: {
   );
 }
 
-export function KanbanBoard({ tasks, members, onEdit, onDelete, onStatusChange }: KanbanBoardProps) {
+export function KanbanBoard({ tasks, onEdit, onDelete, onStatusChange }: KanbanBoardProps) {
   const [dragOver, setDragOver] = useState<string | null>(null);
 
   const handleDrop = (e: React.DragEvent, colId: string) => {

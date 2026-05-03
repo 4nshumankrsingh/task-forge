@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Shield, Crown, User, MoreVertical, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,12 +24,11 @@ function getInitials(name: string) {
 }
 
 export function MembersPanel({
-  project, currentUserId, isAdmin, isOwner,
+  project, currentUserId, isAdmin,
 }: {
   project: Project;
   currentUserId: string;
   isAdmin: boolean;
-  isOwner: boolean;
 }) {
   const qc = useQueryClient();
 

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { taskService, CreateTaskPayload, UpdateTaskPayload, TaskFilters } from "@/services/task.service";
+import { taskService } from "@/services/task.service";
+import type { CreateTaskPayload, UpdateTaskPayload, TaskFilters } from "@/services/task.service";
 import { toast } from "sonner";
 
 export function useProjectTasks(projectId: string, filters?: TaskFilters) {

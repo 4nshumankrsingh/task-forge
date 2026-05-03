@@ -4,7 +4,7 @@ import { useProject, useUpdateProject, useInviteMember, useDeleteProject } from 
 import { useProjectTasks, useCreateTask, useUpdateTask, useDeleteTask } from "@/hooks/useTasks";
 import { useAuth } from "@/hooks/useAuth";
 import {
-  ArrowLeft, Plus, Users, Settings, Trash2, UserPlus,
+  ArrowLeft, Plus, Users, Trash2, UserPlus,
   LayoutGrid, List, ChevronDown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -211,18 +211,16 @@ export default function ProjectDetail() {
           ) : view === "kanban" ? (
             <KanbanBoard
               tasks={tasks}
-              members={project.members}
-              onEdit={(t) => { setEditingTask(t); setTaskModalOpen(true); }}
-              onDelete={(id) => deleteTask(id)}
-              onStatusChange={(taskId, status) => updateTask({ id: taskId, payload: { status } })}
+              onEdit={(t: Task) => { setEditingTask(t); setTaskModalOpen(true); }}
+              onDelete={(id: string) => deleteTask(id)}
+              onStatusChange={(taskId: string, status: Task["status"]) => updateTask({ id: taskId, payload: { status } })}
             />
           ) : (
             <TaskList
               tasks={tasks}
-              members={project.members}
-              onEdit={(t) => { setEditingTask(t); setTaskModalOpen(true); }}
-              onDelete={(id) => deleteTask(id)}
-              onStatusChange={(taskId, status) => updateTask({ id: taskId, payload: { status } })}
+              onEdit={(t: Task) => { setEditingTask(t); setTaskModalOpen(true); }}
+              onDelete={(id: string) => deleteTask(id)}
+              onStatusChange={(taskId: string, status: Task["status"]) => updateTask({ id: taskId, payload: { status } })}
             />
           )}
         </TabsContent>
@@ -232,7 +230,6 @@ export default function ProjectDetail() {
             project={project}
             currentUserId={user?.id ?? ""}
             isAdmin={isAdmin}
-            isOwner={isOwner}
           />
         </TabsContent>
       </Tabs>

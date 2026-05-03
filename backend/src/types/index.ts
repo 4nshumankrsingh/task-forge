@@ -1,5 +1,4 @@
 import { Request } from "express";
-import { MemberRole } from "@prisma/client";
 
 export interface AuthPayload {
   userId: string;
@@ -13,7 +12,7 @@ export interface AuthRequest extends Request {
 export interface ProjectMemberContext {
   userId: string;
   projectId: string;
-  role: MemberRole;
+  role: "ADMIN" | "MEMBER";
 }
 
 export interface PaginationQuery {

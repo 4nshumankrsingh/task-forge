@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { projectService, CreateProjectPayload, UpdateProjectPayload } from "@/services/project.service";
+import { projectService } from "@/services/project.service";
+import type { CreateProjectPayload, UpdateProjectPayload } from "@/services/project.service";
 import { toast } from "sonner";
 
 export function useProjects() {
