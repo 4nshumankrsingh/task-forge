@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bell, ChevronDown, LogOut, Settings, User, Check, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,6 @@ import { toast } from "sonner";
 export function Navbar() {
   const { user, logout } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const qc = useQueryClient();
   const [notifOpen, setNotifOpen] = useState(false);
 
